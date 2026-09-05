@@ -1,0 +1,196 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/db/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Taxonomy. Not versioned: it is the shape of the course, not the knowledge in it.
+// Re-ingesting upserts these by title and writes new knowledge rows against them.
+
+model Subject {
+  id            String         @id @default(cuid())
+  title         String         @unique
+  chapters      Chapter[]
+  chunks        Chunk[]
+  exemplars     Exemplar[]
+  conversations Conversation[]
+}
+
+model Teacher {
+  id            String    @id @default(cuid())
+  name          String    @unique
+  voiceId       String?
+  personaPrompt String
+  chapters      Chapter[]
+}
+
+model Chapter {
+  id        String  @id @default(cuid())
+  subjectId String
+  teacherId String
+  title     String
+  ord       Int
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  topics    Topic[]
+
+  @@unique([subjectId, title])
+  @@index([subjectId])
+}
+
+model Topic {
+  id          String       @id @default(cuid())
+  chapterId   String
+  title       String
+  chapter     Chapter      @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chunks      Chunk[]
+  exemplars   Exemplar[]
+  methodCards MethodCard[]
+
+  @@unique([chapterId, title])
+  @@index([chapterId])
+}
+
+// Knowledge. Every row carries corpusVersion; retrieval filters on the active one.
+// subjectId is denormalized off Topic -> Chapter so Postgres can pre-filter on a btree
+// index before the vector scan. Without it a physics question can retrieve a maths
+// exemplar, confidently and with no error.
+
+model Chunk {
+  id            String                      @id @default(cuid())
+  topicId       String
+  subjectId     String
+  corpusVersion Int
+  source        String // "note" | "book"
+  content       String
+  contentNorm   String // normalizePersian(content) — the column we actually search
+  embedding     Unsupported("vector(768)")?
+  topic         Topic                       @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  subject       Subject                     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@index([subjectId, corpusVersion])
+  @@index([topicId, corpusVersion])
+}
+
+model Exemplar {
+  id            String                      @id @default(cuid())
+  topicId       String
+  subjectId     String
+  corpusVersion Int
+  question      String
+  questionNorm  String
+  options       Json?
+  answer        String
+  solutionMd    String
+  methodTags    String[]
+  difficulty    Int?
+  embedding     Unsupported("vector(768)")?
+  topic         Topic                       @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  subject       Subject                     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@index([subjectId, corpusVersion])
+  @@index([topicId, corpusVersion])
+}
+
+model MethodCard {
+  id              String  @id @default(cuid())
+  topicId         String
+  corpusVersion   Int
+  contentMd       String
+  teacherApproved Boolean @default(false)
+  topic           Topic   @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@unique([topicId, corpusVersion])
+  @@index([topicId, corpusVersion])
+}
+
+// Anything ingest could not trust. Never dropped silently: a record that fails Zod
+// cannot become an Exemplar, so it lands here with its raw text and the reason.
+model IngestFlag {
+  id            String   @id @default(cuid())
+  corpusVersion Int
+  kind          String // "schema" | "formula"
+  reason        String
+  rawText       String
+  sourcePath    String?
+  createdAt     DateTime @default(now())
+
+  @@index([corpusVersion])
+}
+
+// Key/value. Holds "activeCorpusVersion" — flipping it is what makes an ingest live.
+model Setting {
+  key   String @id
+  value String
+}
+
+// Application data. Users are created by hand for the MVP (`bun run user:add`); there is no
+// sign-up flow and no SMS, so nothing here models a registration funnel that does not exist.
+
+model User {
+  id            String         @id @default(cuid())
+  username      String         @unique
+  passwordHash  String
+  // Third-party tokens are the client's cost under the contract, so the ceiling is per user
+  // and lives on the row rather than in config — one student can be raised without a deploy.
+  dailyTokenCap Int            @default(200000)
+  createdAt     DateTime       @default(now())
+  conversations Conversation[]
+  usage         Usage[]
+}
+
+model Conversation {
+  id        String    @id @default(cuid())
+  userId    String
+  subjectId String
+  title     String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject   Subject   @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  messages  Message[]
+
+  @@index([userId, updatedAt])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  role           String
+  // UIMessage["parts"], never flattened text. Images, citations and audio arrive in later
+  // phases; a `content String` column would make each of them a migration on live data.
+  parts          Json
+  mode           String? // AnswerMode, assistant messages only
+  // Phase 6 TTS. The audio is generated from audioScript, not from `parts` — a nested
+  // fraction read aloud is gibberish — so both are kept: when the audio is wrong, the script
+  // says whether the rewrite or the voice failed. audioUrl set means "already generated";
+  // that is the whole cache.
+  audioUrl       String?
+  audioScript    String? @db.Text
+  createdAt      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+}
+
+// One row per model call. Without it we can neither invoice the client for tokens nor stop
+// one student from burning the account, both of which the contract makes our problem.
+model Usage {
+  id               String   @id @default(cuid())
+  userId           String
+  // Nullable because not every call belongs to a conversation: the ingest, the eval and the
+  // method-card scripts all spend tokens with no chat behind them.
+  conversationId   String?
+  role             String // ChatRole
+  model            String
+  promptTokens     Int
+  completionTokens Int
+  createdAt        DateTime @default(now())
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([conversationId])
+}

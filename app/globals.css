@@ -1,0 +1,249 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@source "../node_modules/streamdown/dist/*.js";
+@source "../node_modules/@streamdown/cjk/dist/*.js";
+@source "../node_modules/@streamdown/code/dist/*.js";
+@source "../node_modules/@streamdown/math/dist/*.js";
+@source "../node_modules/@streamdown/mermaid/dist/*.js";
+
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-heading: var(--font-sans);
+    --font-sans: var(--font-sans);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-brand-navy: var(--brand-navy);
+    --color-brand-red: var(--brand-red);
+    --color-brand-blue: var(--brand-blue);
+    --color-brand-red-foreground: var(--brand-red-foreground);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+    color-scheme: light;
+
+    /* Tamland's own three, measured off their booklet cover. Kept as literal brand values
+       beside the semantic scale: `accent` drives every hover in shadcn, so putting a
+       saturated red there would turn the whole UI red on mouseover. */
+    --brand-navy: oklch(0.2418 0.1132 262.2);
+    --brand-red: oklch(0.5116 0.2036 26.9);
+    --brand-blue: oklch(0.4218 0.2381 263.9);
+    --brand-red-foreground: oklch(0.99 0.005 27);
+
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.2 0.04 262);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.2 0.04 262);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.2 0.04 262);
+    --primary: oklch(0.2418 0.1132 262.2);
+    --primary-foreground: oklch(0.99 0.005 262);
+    --secondary: oklch(0.96 0.012 262);
+    --secondary-foreground: oklch(0.2418 0.1132 262.2);
+    --muted: oklch(0.965 0.008 262);
+    --muted-foreground: oklch(0.5 0.03 262);
+    --accent: oklch(0.95 0.018 262);
+    --accent-foreground: oklch(0.2418 0.1132 262.2);
+    --destructive: oklch(0.5116 0.2036 26.9);
+    --border: oklch(0.62 0.03 262);
+    --input: oklch(0.62 0.03 262);
+    --ring: oklch(0.4218 0.2381 263.9);
+    --chart-1: oklch(0.2418 0.1132 262.2);
+    --chart-2: oklch(0.4218 0.2381 263.9);
+    --chart-3: oklch(0.5116 0.2036 26.9);
+    --chart-4: oklch(0.6 0.12 262);
+    --chart-5: oklch(0.75 0.08 262);
+    --radius: 0.75rem;
+    --sidebar: oklch(0.975 0.01 262);
+    --sidebar-foreground: oklch(0.2 0.04 262);
+    --sidebar-primary: oklch(0.2418 0.1132 262.2);
+    --sidebar-primary-foreground: oklch(0.99 0.005 262);
+    --sidebar-accent: oklch(0.93 0.022 262);
+    --sidebar-accent-foreground: oklch(0.2418 0.1132 262.2);
+    --sidebar-border: oklch(0.62 0.03 262);
+    --sidebar-ring: oklch(0.4218 0.2381 263.9);
+}
+
+.dark {
+    color-scheme: dark;
+
+    /* Lifted until each clears 4.5:1 on the dark background; the printed values are too
+       dark to read on it. Hue is held, chroma reduced only where sRGB runs out. */
+    --brand-navy: oklch(0.7 0.115 262);
+    --brand-red: oklch(0.66 0.19 27);
+    --brand-blue: oklch(0.66 0.205 264);
+    --brand-red-foreground: oklch(0.17 0.03 27);
+
+    --background: oklch(0.17 0.02 262);
+    --foreground: oklch(0.97 0.008 262);
+    --card: oklch(0.21 0.025 262);
+    --card-foreground: oklch(0.97 0.008 262);
+    --popover: oklch(0.21 0.025 262);
+    --popover-foreground: oklch(0.97 0.008 262);
+    --primary: oklch(0.7 0.115 262);
+    --primary-foreground: oklch(0.17 0.03 262);
+    --secondary: oklch(0.28 0.03 262);
+    --secondary-foreground: oklch(0.97 0.008 262);
+    --muted: oklch(0.27 0.025 262);
+    --muted-foreground: oklch(0.73 0.022 262);
+    --accent: oklch(0.31 0.035 262);
+    --accent-foreground: oklch(0.97 0.008 262);
+    --destructive: oklch(0.66 0.19 27);
+    --border: oklch(1 0 0 / 13%);
+    --input: oklch(1 0 0 / 17%);
+    --ring: oklch(0.66 0.205 264);
+    --chart-1: oklch(0.7 0.115 262);
+    --chart-2: oklch(0.66 0.205 264);
+    --chart-3: oklch(0.66 0.19 27);
+    --chart-4: oklch(0.55 0.1 262);
+    --chart-5: oklch(0.4 0.07 262);
+    --sidebar: oklch(0.2 0.024 262);
+    --sidebar-foreground: oklch(0.97 0.008 262);
+    --sidebar-primary: oklch(0.7 0.115 262);
+    --sidebar-primary-foreground: oklch(0.17 0.03 262);
+    --sidebar-accent: oklch(0.31 0.035 262);
+    --sidebar-accent-foreground: oklch(0.97 0.008 262);
+    --sidebar-border: oklch(1 0 0 / 13%);
+    --sidebar-ring: oklch(0.66 0.205 264);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+  html {
+    @apply font-sans;
+    }
+  button:not(:disabled), [role="button"]:not(:disabled) {
+    cursor: pointer;
+    }
+  /* Removes the 300ms double-tap-to-zoom delay; this is a phone-first audience. */
+  button, a, [role="button"], input, select, textarea {
+    touch-action: manipulation;
+    }
+  h1, h2, h3 {
+    text-wrap: balance;
+    }
+  p {
+    text-wrap: pretty;
+    }
+  /* Persian numerals sit in the same advance width, so measurements and token counts
+     stop shifting as they stream in. */
+  [data-numeric] {
+    font-variant-numeric: tabular-nums;
+    }
+}
+
+/* One global switch rather than a check in every animated component. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+    }
+}
+/* Maths direction.
+   KaTeX emits LTR HTML and sets no direction of its own — its stylesheet contains no
+   `direction` or `unicode-bidi` rule at all. Inside dir="rtl" the browser's bidi algorithm
+   therefore reorders the spans, and `m_A + m_B` paints as "B m + A m". `isolate` rather
+   than plain `direction: ltr` so the formula is also a single neutral to the Persian
+   around it, and the sentence's own direction is unaffected. */
+.katex {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* Maths vertical rhythm.
+   KaTeX stacks superscripts and fraction rows with absolutely positioned spans inside an
+   inline box, so a tall formula paints outside its line box. `inline-block` makes the line
+   box take the formula's real height. */
+.katex {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Persian digits inside maths.
+   KaTeX declares `font-family: KaTeX_Main, "Times New Roman", serif` and its own fonts carry
+   no Persian glyph, so ۱۲ and ۱۰ were painted by whatever serif the device happened to have —
+   Times New Roman here, something else on a student's phone. Its Persian digits sit about a
+   pixel taller and three higher than the Latin digits KaTeX reserved the space for, so the
+   fraction rule cut through them.
+
+   Adding our own font to the chain is the whole fix: measured against a Latin fraction, which
+   renders correctly, the Persian one went from 4.0px of overshoot to 1.0px of extra clearance.
+   Latin is untouched, because KaTeX_Main still has those glyphs and comes first.
+
+   Supplying KaTeX the missing metrics was the other candidate and is not needed: Vazirmatn's
+   Persian digits measure 0.66em tall against KaTeX_Main's Latin 0.67em, so correct metrics
+   would move them by about a sixth of a pixel. */
+.katex {
+  font-family: KaTeX_Main, var(--font-sans), "Times New Roman", serif;
+}
+
+.katex * {
+  line-height: normal;
+}
+
+/* Wide formulas scroll inside their own box rather than widening the page. */
+.katex-display {
+  margin-block: 0.85em;
+  padding-block: 0.15em;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Measured, not guessed: at our body size a fraction's glyphs run about 9px taller than a
+   1.6 line box, and a Persian label inside 	ext{} adds roughly one more pixel. Earlier
+   numbers here were far larger because the measurement was picking up KaTeX's .pstrut
+   spacers, which are 500px tall by design and paint nothing. */
+.prose-math p,
+.prose-math li {
+  line-height: 1.9;
+}
+
+.prose-math :is(p, li):has(.mfrac) {
+  line-height: 2.3;
+}

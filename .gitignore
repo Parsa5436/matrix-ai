@@ -1,0 +1,66 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+!.env.example
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# prisma client (generated)
+/lib/db/generated
+
+# probe output: the gateway's model list, and the audio probe-tts writes
+/scripts/.models.json
+/scripts/.tts-*.mp3
+
+# The teacher's own material: his slide deck, the institute's booklets, and everything the
+# ingest derives from them. His commercial property, not ours to publish — and nothing here
+# is read at runtime. Point `bun run ingest --dir` at your own corpus.
+/content
+
+# The scored question sets are his exam questions, transcribed verbatim from the same deck.
+# Same reason as /content. The harness and its shape are published; his questions are not.
+/evals/*.json
+
+# Vendored third-party skill libraries. Only this project's own constitution is committed.
+/.claude/skills/*
+!/.claude/skills/ostad
+
+# Agent tooling: vendored skill libraries and a node_modules of its own.
+/.agents
+/.opencode
+/skills-lock.json
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/
+.uploads

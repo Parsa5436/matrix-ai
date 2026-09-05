@@ -1,0 +1,14 @@
+-- One-time, superuser only. Run through `bun run db:bootstrap`, which supplies the role
+-- name, password and database from DATABASE_URL and escapes them through Postgres'
+-- own format(), so nothing here is string-concatenated by us.
+--
+-- Kept as a reference for a DBA who would rather run the steps by hand:
+--
+--   CREATE ROLE ostad_app LOGIN PASSWORD '...';
+--   CREATE DATABASE ostad OWNER ostad_app;
+--   \connect ostad
+--   CREATE EXTENSION IF NOT EXISTS vector;
+--   GRANT CREATE, USAGE ON SCHEMA public TO ostad_app;
+--
+-- The application connects as ostad_app, which cannot create extensions, create roles,
+-- or read another database. That is the point: the setup rights exist for one command.
