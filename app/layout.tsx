@@ -15,9 +15,9 @@ const fontSans = localFont({
 	variable: "--font-sans",
 });
 
-import { ASSISTANT_INTRO, TEACHER_NAME } from "@/lib/brand";
+import { TEACHER_NAME } from "@/lib/brand";
 export const metadata: Metadata = {
-	title: `${TEACHER_NAME} — ${ASSISTANT_INTRO}`,
+	title: `${TEACHER_NAME} — دستیار دیجیتال`,
 	description:
 		"سؤالت را بپرس و ببین استاد یحیوی چطور حلش می‌کند: قدم‌به‌قدم، به روش خودش.",
 };
