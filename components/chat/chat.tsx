@@ -40,6 +40,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { ASSISTANT_INTRO } from "@/lib/brand";
 import { compressImage } from "@/lib/compress-image";
 import type { SubjectOption } from "@/lib/db/subjects";
 import type { ConversationUsage } from "@/lib/db/usage";
@@ -239,7 +240,8 @@ export function Chat({
 							<div className="space-y-1">
 								<h2 className="font-semibold text-lg">خب، از کجا شروع کنیم؟</h2>
 								<p className="text-muted-foreground text-sm">
-									هر سؤالی از فصل داری بپرس — قدم‌به‌قدم با هم حلش می‌کنیم.
+									من {ASSISTANT_INTRO} هستم. هر سؤالی از فصل داری بپرس — به همان
+									روشی که خودش سر کلاس حل می‌کند، قدم‌به‌قدم.
 								</p>
 							</div>
 							<Suggestions className="mt-2">

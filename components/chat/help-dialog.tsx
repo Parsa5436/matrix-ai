@@ -14,6 +14,7 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { ASSISTANT_INTRO } from "@/lib/brand";
 
 // Written for a fifteen-year-old, not for the client. The one thing it has to land is that
 // the answers come from their own teacher's notes, because that is the only reason to open
@@ -74,7 +75,7 @@ export function HelpDialog() {
 
 			<DialogContent className="max-h-[85svh] gap-0 overflow-y-auto sm:max-w-lg">
 				<DialogHeader>
-					<DialogTitle>راهنمای استاد</DialogTitle>
+					<DialogTitle>راهنمای {ASSISTANT_INTRO}</DialogTitle>
 					<DialogDescription>
 						در یک دقیقه: این چیست و چطور ازش بیشترین را بگیری.
 					</DialogDescription>

@@ -14,6 +14,7 @@ const ABSENT_USER_HASH =
 // No sign-up: accounts are created with `bun run user:add`. A registration flow is a whole
 // surface — verification, rate limiting, abuse — for a product whose users are a class the
 // client already knows by name.
+import { ASSISTANT_INTRO, TEACHER_NAME } from "@/lib/brand";
 export default async function LoginPage() {
 	if (await currentUserId()) redirect("/");
 
@@ -44,10 +45,15 @@ export default async function LoginPage() {
 			>
 				<div className="mx-auto w-full max-w-sm space-y-8">
 					<div className="space-y-2">
-						<h1 className="font-bold text-3xl tracking-tight">استاد</h1>
+						<h1 className="font-bold text-3xl tracking-tight">
+							{TEACHER_NAME}
+						</h1>
+						<p className="font-medium text-brand-red text-sm">
+							{ASSISTANT_INTRO}
+						</p>
 						<p className="text-muted-foreground text-sm leading-6">
-							سؤالت را بپرس و ببین معلم خودت چطور حلش می‌کند — قدم‌به‌قدم، با همان
-							روشی که سر کلاس گفته.
+							سؤالت را بپرس و ببین استاد چطور حلش می‌کند — قدم‌به‌قدم، با همان روشی
+							که سر کلاس گفته.
 						</p>
 					</div>
 

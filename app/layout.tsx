@@ -15,10 +15,11 @@ const fontSans = localFont({
 	variable: "--font-sans",
 });
 
+import { ASSISTANT_INTRO, TEACHER_NAME } from "@/lib/brand";
 export const metadata: Metadata = {
-	title: "استاد — حل تمرین به روش معلم خودت",
+	title: `${TEACHER_NAME} — ${ASSISTANT_INTRO}`,
 	description:
-		"سؤالت را بپرس و ببین معلم خودت چطور حلش می‌کند: قدم‌به‌قدم، به فارسی.",
+		"سؤالت را بپرس و ببین استاد یحیوی چطور حلش می‌کند: قدم‌به‌قدم، به روش خودش.",
 };
 
 export const viewport: Viewport = {
